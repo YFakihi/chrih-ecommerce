@@ -42,7 +42,7 @@
                             <p class="text-gray-500">Qty 1</p>
   
                             <div class="flex">
-                              <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
+                              <button type="button" class="font-medium text-blue-600 hover:text-blue-500">Remove</button>
                             </div>
                           </div>
                         </div>
@@ -66,7 +66,7 @@
                             <p class="text-gray-500">Qty 1</p>
   
                             <div class="flex">
-                              <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Remove</button>
+                              <button type="button" class="font-medium text-blue-600 hover:text-blue-500">Remove</button>
                             </div>
                           </div>
                         </div>
@@ -85,12 +85,12 @@
                 </div>
                 <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
                 <div class="mt-6">
-                  <a href="#" class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700">Checkout</a>
+                  <a href="#" class="flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-600">Checkout</a>
                 </div>
                 <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
                   <p>
                     or
-                    <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">
+                    <button type="button" class="font-medium text-blue-600 hover:text-blue-500">
                       Continue Shopping
                       <span aria-hidden="true"> &rarr;</span>
                     </button>
