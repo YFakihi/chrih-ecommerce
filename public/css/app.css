@@ -722,6 +722,15 @@ video {
 .transform {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
+@keyframes spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
 .cursor-pointer {
   cursor: pointer;
 }
@@ -842,6 +851,9 @@ video {
 }
 .bg-opacity-75 {
   --tw-bg-opacity: 0.75;
+}
+.fill-blue-600 {
+  fill: #2563eb;
 }
 .object-cover {
   -o-object-fit: cover;
@@ -979,6 +991,10 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+.text-gray-200 {
+  --tw-text-opacity: 1;
+  color: rgb(229 231 235 / var(--tw-text-opacity));
 }
 .line-through {
   text-decoration-line: line-through;
@@ -1186,5 +1202,12 @@ video {
 
   .sm\:duration-700 {
     transition-duration: 700ms;
+  }
+}
+@media (prefers-color-scheme: dark) {
+
+  .dark\:text-gray-600 {
+    --tw-text-opacity: 1;
+    color: rgb(75 85 99 / var(--tw-text-opacity));
   }
 }

@@ -34,44 +34,60 @@ document.addEventListener("DOMContentLoaded", () => {
     [shoppingCartButton, backgroundBackdrop, shoppingCartCloseButton, continueShoppingButton].forEach((element) => element && element.addEventListener("click", handleShoppingCart));
 
     //shopping cart functionality
-    const products = [
-        {
-            "productId": "1",
-            "productName": "Example Product 1",
-            "price": 10.99,
-            "quantity": 0
-        },
-        {
-            "productId": "2",
-            "productName": "Example Product 2",
-            "price": 19.99,
-            "quantity": 0
-        },
-        {
-            "productId": "3",
-            "productName": "Example Product 3",
-            "price": 15.50,
-            "quantity": 0
-        },
-        {
-            "productId": "4",
-            "productName": "Example Product 4",
-            "price": 24.75,
-            "quantity": 0
-        },
-        {
-            "productId": "5",
-            "productName": "Example Product 5",
-            "price": 12.00,
-            "quantity": 0
-        },
-        {
-            "productId": "6",
-            "productName": "Example Product 6",
-            "price": 29.99,
-            "quantity": 0
+    // const products = [
+    //     {
+    //         "productId": "1",
+    //         "productName": "Example Product 1",
+    //         "price": 10.99,
+    //         "quantity": 0
+    //     },
+    //     {
+    //         "productId": "2",
+    //         "productName": "Example Product 2",
+    //         "price": 19.99,
+    //         "quantity": 0
+    //     },
+    //     {
+    //         "productId": "3",
+    //         "productName": "Example Product 3",
+    //         "price": 15.50,
+    //         "quantity": 0
+    //     },
+    //     {
+    //         "productId": "4",
+    //         "productName": "Example Product 4",
+    //         "price": 24.75,
+    //         "quantity": 0
+    //     },
+    //     {
+    //         "productId": "5",
+    //         "productName": "Example Product 5",
+    //         "price": 12.00,
+    //         "quantity": 0
+    //     },
+    //     {
+    //         "productId": "6",
+    //         "productName": "Example Product 6",
+    //         "price": 29.99,
+    //         "quantity": 0
+    //     }
+    // ];
+
+    const fetchProducts = async () => {
+        const endpoint = window.location.href + '/products';
+        try {
+            const response = await fetch(endpoint);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch products. Status: ${response.status}`);
+            }
+            const products = await response.json();
+            return products;
+        } catch (error) {
+            throw new Error(`Failed to fetch products: ${error.message}`);
         }
-    ];
+    };
+    
+
     const productCounter = document.querySelector("[data-element='product-count']");
     
     //initialize cart in localstorage
@@ -224,9 +240,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return cardDiv;
     };
     
+    const toggleLoader = () => {
+        const loader = document.getElementById("loader");
+        loader.classList.toggle("hidden");
+    }
 
     const renderProducts = () => {
+        let products = [];
         const productCardContainer = document.querySelector("[data-element='product-container']");
+        toggleLoader();
+        fetchProducts().then((product) => products.push(product)).catch((error) => console.error(error)).finally(toggleLoader());
         products.forEach((product) => productCardContainer.appendChild(createProductCard(product)));
     }
 
