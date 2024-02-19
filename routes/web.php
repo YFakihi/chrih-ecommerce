@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use TCG\Voyager\Facades\Voyager;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,7 @@ Route::get('/', function () {
     return view('home');
 });
 
+Route::get('/products', [HomeController::class,'index']);
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
