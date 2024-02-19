@@ -1,5 +1,4 @@
 <x-layout>
-    <section>
-        <h1 class="text-gray-500">Hello TailwindCss</h1>
+    <section class="grid gap-y-8 grid-cols-3 justify-center items-center mx-auto my-8 px-8" data-element="product-container">       
     </section>
 </x-layout>
