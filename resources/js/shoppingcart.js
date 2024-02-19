@@ -77,9 +77,22 @@ document.addEventListener("DOMContentLoaded", () => {
     //initialize cart in localstorage
     !localStorage.getItem("cart") && localStorage.setItem("cart", JSON.stringify([]));
 
-    const addProductToCart = (product) => {
+    const addProductToCart = (productId) => {
     const cart = JSON.parse(localStorage.getItem('cart'));
-    cart.push(product);
+    const product = products.find(product => product.productId === productId);
+    const productExists = cart.some((product) => product.productId === productId);
+    if (!productExists) {
+        product.quantity = (product.quantity || 0) + 1;
+        cart.push(product);
+    } else {
+        //if it already exists find and update the quantity
+        cart.forEach((product) => {
+            if (product.productId === productId) {
+                product.quantity = (product.quantity || 0) + 1;
+                return;
+            }
+        });
+    }
     localStorage.setItem('cart', JSON.stringify(cart));
     }
 
@@ -125,7 +138,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const removeButton = document.createElement('button');
         removeButton.type = 'button';
         removeButton.textContent = 'Remove';
+        removeButton.setAttribute("data-remove", product.productId);
         removeButton.classList.add('font-medium', 'text-blue-600', 'hover:text-blue-500');
+        //add remove event listener
+        removeButton.addEventListener("click", (event) => {
+            const eventTarget = (event.target);
+            const addButton = eventTarget.closest("button");
+            const productId = addButton.getAttribute("data-remove");
+            removeProductFromCart(productId);
+            //update cart after item is removed
+            updateCart();
+        });
         removeButtonDiv.appendChild(removeButton);
         innerDiv2.appendChild(quantity);
         innerDiv2.appendChild(removeButtonDiv);
@@ -134,15 +157,26 @@ document.addEventListener("DOMContentLoaded", () => {
         listItem.appendChild(imageDiv);
         listItem.appendChild(detailsDiv);
         return listItem;
-    }    
+    }
+
+    const updateProductsTotalPrice = () => {
+        let totalPrice = 0;
+        const totalContainer = document.querySelector("[data-total]");
+        const cart = JSON.parse(localStorage.getItem('cart'));
+        cart.forEach((item) => totalPrice += (item.price * item.quantity));
+        totalContainer.textContent = '$' + totalPrice.toFixed(2); //2 digits after comma for ux
+    }
 
     const updateCart = () => {
         const productList = document.querySelector("[role='list']");
         const cart = JSON.parse(localStorage.getItem('cart'));
-        //update cart with products
+        //clear existing cart items
+        while(productList.firstChild) productList.removeChild(productList.firstChild);
+        //update cart with products if product doesn't already exists
         cart.forEach((product) => productList.appendChild(createCartItem(product)));
         //update cart toggle button item counter
         if (productCounter) productCounter.textContent = cart.length;
+        updateProductsTotalPrice();
     }
 
     //generate and render the products on the home page
@@ -178,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
         price.innerHTML = `<span class="text-3xl font-bold text-white">$${product.price}</span><span class="text-sm text-white line-through">${product.price}</span>`;
         priceDiv.appendChild(price);
         const addButton = document.createElement('button');
-        addButton.setAttribute("data-id", product.productId);
+        addButton.setAttribute("data-add", product.productId);
         addButton.classList.add('hover:border-white/40', 'flex', 'items-center', 'justify-center', 'rounded-md', 'border', 'border-transparent', 'bg-blue-600', 'px-5', 'py-2.5', 'text-center', 'text-sm', 'font-medium', 'text-white', 'focus:outline-none', 'focus:ring-4', 'focus:ring-blue-300', 'w-full');
         addButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>Add to cart`;
         detailsDiv.appendChild(productLink);
@@ -195,16 +229,30 @@ document.addEventListener("DOMContentLoaded", () => {
         products.forEach((product) => productCardContainer.appendChild(createProductCard(product)));
     }
 
+    
     //execute functions
     renderProducts();
     updateCart();
 
-    //attatch click event listener to products
-    const addButtons = document.querySelectorAll('[data-id]');
+    //attatch click event listener to add product Button
+    const addButtons = document.querySelectorAll('[data-add]');
     addButtons && addButtons.forEach((addButton) => addButton.addEventListener("click", (event) => {
         const eventTarget = (event.target);
         const addButton = eventTarget.closest("button");
-        const productId = addButton.getAttribute("data-id");
+        const productId = addButton.getAttribute("data-add");
         addProductToCart(productId);
+        //update cart after item is added
+        updateCart();
+    }));
+
+    //attatch click event listener to remove product Button
+    const removeButtons = document.querySelectorAll('[data-remove]');
+    removeButtons && removeButtons.forEach((removeButton) => removeButton.addEventListener("click", (event) => {
+        const eventTarget = (event.target);
+        const addButton = eventTarget.closest("button");
+        const productId = addButton.getAttribute("data-remove");
+        removeProductFromCart(productId);
+        //update cart after item is removed
+        updateCart();
     }));
 })

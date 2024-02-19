@@ -71,9 +71,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //initialize cart in localstorage
   !localStorage.getItem("cart") && localStorage.setItem("cart", JSON.stringify([]));
-  var addProductToCart = function addProductToCart(product) {
+  var addProductToCart = function addProductToCart(productId) {
     var cart = JSON.parse(localStorage.getItem('cart'));
-    cart.push(product);
+    var product = products.find(function (product) {
+      return product.productId === productId;
+    });
+    var productExists = cart.some(function (product) {
+      return product.productId === productId;
+    });
+    if (!productExists) {
+      product.quantity = (product.quantity || 0) + 1;
+      cart.push(product);
+    } else {
+      //if it already exists find and update the quantity
+      cart.forEach(function (product) {
+        if (product.productId === productId) {
+          product.quantity = (product.quantity || 0) + 1;
+          return;
+        }
+      });
+    }
     localStorage.setItem('cart', JSON.stringify(cart));
   };
   var removeProductFromCart = function removeProductFromCart(productId) {
@@ -119,7 +136,17 @@ document.addEventListener("DOMContentLoaded", function () {
     var removeButton = document.createElement('button');
     removeButton.type = 'button';
     removeButton.textContent = 'Remove';
+    removeButton.setAttribute("data-remove", product.productId);
     removeButton.classList.add('font-medium', 'text-blue-600', 'hover:text-blue-500');
+    //add remove event listener
+    removeButton.addEventListener("click", function (event) {
+      var eventTarget = event.target;
+      var addButton = eventTarget.closest("button");
+      var productId = addButton.getAttribute("data-remove");
+      removeProductFromCart(productId);
+      //update cart after item is removed
+      updateCart();
+    });
     removeButtonDiv.appendChild(removeButton);
     innerDiv2.appendChild(quantity);
     innerDiv2.appendChild(removeButtonDiv);
@@ -129,15 +156,27 @@ document.addEventListener("DOMContentLoaded", function () {
     listItem.appendChild(detailsDiv);
     return listItem;
   };
+  var updateProductsTotalPrice = function updateProductsTotalPrice() {
+    var totalPrice = 0;
+    var totalContainer = document.querySelector("[data-total]");
+    var cart = JSON.parse(localStorage.getItem('cart'));
+    cart.forEach(function (item) {
+      return totalPrice += item.price * item.quantity;
+    });
+    totalContainer.textContent = '$' + totalPrice.toFixed(2); //2 digits after comma for ux
+  };
   var updateCart = function updateCart() {
     var productList = document.querySelector("[role='list']");
     var cart = JSON.parse(localStorage.getItem('cart'));
-    //update cart with products
+    //clear existing cart items
+    while (productList.firstChild) productList.removeChild(productList.firstChild);
+    //update cart with products if product doesn't already exists
     cart.forEach(function (product) {
       return productList.appendChild(createCartItem(product));
     });
     //update cart toggle button item counter
     if (productCounter) productCounter.textContent = cart.length;
+    updateProductsTotalPrice();
   };
 
   //generate and render the products on the home page
@@ -173,7 +212,7 @@ document.addEventListener("DOMContentLoaded", function () {
     price.innerHTML = "<span class=\"text-3xl font-bold text-white\">$".concat(product.price, "</span><span class=\"text-sm text-white line-through\">").concat(product.price, "</span>");
     priceDiv.appendChild(price);
     var addButton = document.createElement('button');
-    addButton.setAttribute("data-id", product.productId);
+    addButton.setAttribute("data-add", product.productId);
     addButton.classList.add('hover:border-white/40', 'flex', 'items-center', 'justify-center', 'rounded-md', 'border', 'border-transparent', 'bg-blue-600', 'px-5', 'py-2.5', 'text-center', 'text-sm', 'font-medium', 'text-white', 'focus:outline-none', 'focus:ring-4', 'focus:ring-blue-300', 'w-full');
     addButton.innerHTML = "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"mr-2 h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"2\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z\" /></svg>Add to cart";
     detailsDiv.appendChild(productLink);
@@ -194,14 +233,29 @@ document.addEventListener("DOMContentLoaded", function () {
   renderProducts();
   updateCart();
 
-  //attatch click event listener to products
-  var addButtons = document.querySelectorAll('[data-id]');
+  //attatch click event listener to add product Button
+  var addButtons = document.querySelectorAll('[data-add]');
   addButtons && addButtons.forEach(function (addButton) {
     return addButton.addEventListener("click", function (event) {
       var eventTarget = event.target;
       var addButton = eventTarget.closest("button");
-      var productId = addButton.getAttribute("data-id");
+      var productId = addButton.getAttribute("data-add");
       addProductToCart(productId);
+      //update cart after item is added
+      updateCart();
+    });
+  });
+
+  //attatch click event listener to remove product Button
+  var removeButtons = document.querySelectorAll('[data-remove]');
+  removeButtons && removeButtons.forEach(function (removeButton) {
+    return removeButton.addEventListener("click", function (event) {
+      var eventTarget = event.target;
+      var addButton = eventTarget.closest("button");
+      var productId = addButton.getAttribute("data-remove");
+      removeProductFromCart(productId);
+      //update cart after item is removed
+      updateCart();
     });
   });
 });
