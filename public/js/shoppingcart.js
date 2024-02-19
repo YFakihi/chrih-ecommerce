@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return product.productId === productId;
     });
     if (!productExists) {
-      product.quantity = (product.quantity || 0) + 1;
+      if (product.quantity === 0) product.quantity = (product.quantity || 0) + 1;
       cart.push(product);
     } else {
       //if it already exists find and update the quantity
@@ -98,6 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
     cart = cart.filter(function (item) {
       return item.productId !== productId;
     });
+    console.log(cart);
     localStorage.setItem('cart', JSON.stringify(cart));
   };
   var createCartItem = function createCartItem(product) {
