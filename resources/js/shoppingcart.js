@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const product = products.find(product => product.productId === productId);
     const productExists = cart.some((product) => product.productId === productId);
     if (!productExists) {
-        product.quantity = (product.quantity || 0) + 1;
+        if(product.quantity === 0) product.quantity = (product.quantity || 0) + 1;
         cart.push(product);
     } else {
         //if it already exists find and update the quantity
@@ -99,6 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const removeProductFromCart = (productId) => {
         let cart = JSON.parse(localStorage.getItem('cart'));
         cart = cart.filter(item => item.productId !== productId);
+        console.log(cart);
         localStorage.setItem('cart', JSON.stringify(cart));
     }
 
