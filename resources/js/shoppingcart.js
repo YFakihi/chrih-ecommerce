@@ -202,6 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggleLoader = () => {
         const loader = document.getElementById("home-spinner");
         loader.classList.toggle("hidden");
+        loader.classList.toggle("flex");
     }
 
     const renderProducts = () => {

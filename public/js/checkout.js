@@ -71,6 +71,7 @@ var postCheckoutCart = /*#__PURE__*/function () {
 var toggleCheckoutSpinner = function toggleCheckoutSpinner(checkoutButton) {
   var checkoutSpinner = document.getElementById("checkout-spinner");
   checkoutSpinner.classList.toggle("hidden");
+  checkoutSpinner.classList.toggle("flex");
   checkoutButton.classList.toggle("hidden");
 };
 var handleCheckout = function handleCheckout(event) {

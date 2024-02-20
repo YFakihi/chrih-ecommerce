@@ -233,6 +233,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var toggleLoader = function toggleLoader() {
     var loader = document.getElementById("home-spinner");
     loader.classList.toggle("hidden");
+    loader.classList.toggle("flex");
   };
   var renderProducts = function renderProducts() {
     var productCardContainer = document.querySelector("[data-element='product-container']");
