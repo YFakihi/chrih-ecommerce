@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
-            endpoint = window.location.href + '/products';
+            endpoint = window.location.href + 'products';
             _context.prev = 1;
             _context.next = 4;
             return fetch(endpoint);
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var titlePriceDiv = document.createElement('div');
     titlePriceDiv.classList.add('flex', 'justify-between', 'text-base', 'font-medium', 'text-gray-900');
     var productTitle = document.createElement('h3');
-    productTitle.innerHTML = '<a href="#">' + product.productName + '</a>';
+    productTitle.innerHTML = '<a href="#">' + product.name + '</a>';
     var price = document.createElement('p');
     price.textContent = '$' + product.price;
     price.classList.add('ml-4');
@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var removeButton = document.createElement('button');
     removeButton.type = 'button';
     removeButton.textContent = 'Remove';
-    removeButton.setAttribute("data-remove", product.productId);
+    removeButton.setAttribute("data-remove", product.id);
     removeButton.classList.add('font-medium', 'text-blue-600', 'hover:text-blue-500');
     //add remove event listener
     removeButton.addEventListener("click", function (event) {
@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", function () {
     productLink.href = '#';
     var title = document.createElement('h5');
     title.classList.add('text-xl', 'tracking-tight', 'text-white');
-    title.textContent = product.productName;
+    title.textContent = product.name;
     productLink.appendChild(title);
     var priceDiv = document.createElement('div');
     priceDiv.classList.add('mt-2', 'mb-5', 'flex', 'items-center', 'justify-between');
@@ -262,7 +262,7 @@ document.addEventListener("DOMContentLoaded", function () {
     price.innerHTML = "<span class=\"text-3xl font-bold text-white\">$".concat(product.price, "</span><span class=\"text-sm text-white line-through\">").concat(product.price, "</span>");
     priceDiv.appendChild(price);
     var addButton = document.createElement('button');
-    addButton.setAttribute("data-add", product.productId);
+    addButton.setAttribute("data-add", product.id);
     addButton.classList.add('hover:border-white/40', 'flex', 'items-center', 'justify-center', 'rounded-md', 'border', 'border-transparent', 'bg-blue-600', 'px-5', 'py-2.5', 'text-center', 'text-sm', 'font-medium', 'text-white', 'focus:outline-none', 'focus:ring-4', 'focus:ring-blue-300', 'w-full');
     addButton.innerHTML = "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"mr-2 h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"2\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z\" /></svg>Add to cart";
     detailsDiv.appendChild(productLink);
@@ -277,18 +277,16 @@ document.addEventListener("DOMContentLoaded", function () {
     loader.classList.toggle("hidden");
   };
   var renderProducts = function renderProducts() {
-    var products = [];
     var productCardContainer = document.querySelector("[data-element='product-container']");
     toggleLoader();
-    fetchProducts().then(function (product) {
-      return products.push(product);
+    fetchProducts().then(function (products) {
+      products.forEach(function (product) {
+        return productCardContainer.appendChild(createProductCard(product));
+      });
     })["catch"](function (error) {
       return console.error(error);
     })["finally"](function () {
       return toggleLoader();
-    });
-    products.forEach(function (product) {
-      return productCardContainer.appendChild(createProductCard(product));
     });
   };
 

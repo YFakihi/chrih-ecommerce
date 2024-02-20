@@ -42,9 +42,8 @@ return [
     */
 
     'models' => [
-        //'namespace' => 'App\\Models\\',
+        'namespace' => 'TCG\\Voyager\\Models\\',
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Storage Config
