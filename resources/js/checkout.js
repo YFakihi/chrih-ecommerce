@@ -35,6 +35,7 @@ const postCheckoutCart = async () => {
 const toggleCheckoutSpinner = (checkoutButton) => {
     const checkoutSpinner = document.getElementById("checkout-spinner");
     checkoutSpinner.classList.toggle("hidden");
+    checkoutSpinner.classList.toggle("flex");
     checkoutButton.classList.toggle("hidden");
 }
 
