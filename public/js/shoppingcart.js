@@ -284,7 +284,9 @@ document.addEventListener("DOMContentLoaded", function () {
       return products.push(product);
     })["catch"](function (error) {
       return console.error(error);
-    })["finally"](toggleLoader());
+    })["finally"](function () {
+      return toggleLoader();
+    });
     products.forEach(function (product) {
       return productCardContainer.appendChild(createProductCard(product));
     });

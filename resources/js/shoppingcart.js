@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let products = [];
         const productCardContainer = document.querySelector("[data-element='product-container']");
         toggleLoader();
-        fetchProducts().then((product) => products.push(product)).catch((error) => console.error(error)).finally(toggleLoader());
+        fetchProducts().then((product) => products.push(product)).catch((error) => console.error(error)).finally(() => toggleLoader());
         products.forEach((product) => productCardContainer.appendChild(createProductCard(product)));
     }
 
