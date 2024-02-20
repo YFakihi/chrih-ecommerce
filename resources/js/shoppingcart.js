@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
         link.classList.add('relative', 'mx-3', 'mt-3', 'flex', 'h-60', 'overflow-hidden', 'rounded-xl');
         link.href = '#';
         const primaryImg = document.createElement('img');
-        primaryImg.classList.add('peer', 'absolute', 'top-0', 'right-0', 'h-full', 'w-full', 'object-cover', 'object-center');
+        primaryImg.classList.add('peer', 'absolute', 'top-0', 'right-0', 'h-full', 'w-full', 'object-center');
         primaryImg.src = "https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60?a=b";
         primaryImg.alt = 'product image';
         const secondaryImg = document.createElement('img');
@@ -239,7 +239,19 @@ document.addEventListener("DOMContentLoaded", () => {
         
     }
 
-    
+    //handle navbar sticky after scrolled past its height
+    const navbar = document.getElementById("navbar");
+    const navbarHeight = navbar.offsetHeight; 
+    const handleNavbar = () => {
+        const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+        if (scrollPosition >= navbarHeight) 
+                navbar.classList.add("fixed");
+        else
+            navbar.classList.remove("fixed");
+    }
+
+    window.addEventListener("scroll", handleNavbar);
+
     //execute functions
     renderProducts();
     updateCart();

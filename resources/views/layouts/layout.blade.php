@@ -13,8 +13,8 @@
             <nav>
                 <x-shoppingcart />
                 <nav>
-                    <div class="px-8 fixed w-full z-50 bg-gray-800 shadow-sm">
-                      <div class="relative flex h-16 items-center justify-between">
+                    <div class="px-8 flex w-full z-40 bg-gray-800 shadow-sm transition duration-300 ease-in-out" id="navbar">
+                      <div class="flex h-16 items-center justify-between w-full">
                         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
                           <!-- Mobile menu button-->
                           <button type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">

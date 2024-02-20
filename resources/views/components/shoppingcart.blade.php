@@ -1,5 +1,5 @@
  {{-- tailwind && js shopping cart --}}
- <div class="relative z-10" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+ <div class="relative z-50" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
     <div class="fixed inset-0 ease-in-out duration-500 bg-gray-500 bg-opacity-75 transition opacity-0 pointer-events-none" data-element="background-backdrop"></div>
   
       <div class="absolute inset-0 overflow-hidden">

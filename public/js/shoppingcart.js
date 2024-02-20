@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
     link.classList.add('relative', 'mx-3', 'mt-3', 'flex', 'h-60', 'overflow-hidden', 'rounded-xl');
     link.href = '#';
     var primaryImg = document.createElement('img');
-    primaryImg.classList.add('peer', 'absolute', 'top-0', 'right-0', 'h-full', 'w-full', 'object-cover', 'object-center');
+    primaryImg.classList.add('peer', 'absolute', 'top-0', 'right-0', 'h-full', 'w-full', 'object-center');
     primaryImg.src = "https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60?a=b";
     primaryImg.alt = 'product image';
     var secondaryImg = document.createElement('img');
@@ -275,6 +275,15 @@ document.addEventListener("DOMContentLoaded", function () {
       return toggleLoader();
     });
   };
+
+  //handle navbar sticky after scrolled past its height
+  var navbar = document.getElementById("navbar");
+  var navbarHeight = navbar.offsetHeight;
+  var handleNavbar = function handleNavbar() {
+    var scrollPosition = window.scrollY || document.documentElement.scrollTop;
+    if (scrollPosition >= navbarHeight) navbar.classList.add("fixed");else navbar.classList.remove("fixed");
+  };
+  window.addEventListener("scroll", handleNavbar);
 
   //execute functions
   renderProducts();
