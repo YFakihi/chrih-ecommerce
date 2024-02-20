@@ -38,50 +38,9 @@ document.addEventListener("DOMContentLoaded", function () {
   [shoppingCartButton, backgroundBackdrop, shoppingCartCloseButton, continueShoppingButton].forEach(function (element) {
     return element && element.addEventListener("click", handleShoppingCart);
   });
-
-  //shopping cart functionality
-  // const products = [
-  //     {
-  //         "productId": "1",
-  //         "productName": "Example Product 1",
-  //         "price": 10.99,
-  //         "quantity": 0
-  //     },
-  //     {
-  //         "productId": "2",
-  //         "productName": "Example Product 2",
-  //         "price": 19.99,
-  //         "quantity": 0
-  //     },
-  //     {
-  //         "productId": "3",
-  //         "productName": "Example Product 3",
-  //         "price": 15.50,
-  //         "quantity": 0
-  //     },
-  //     {
-  //         "productId": "4",
-  //         "productName": "Example Product 4",
-  //         "price": 24.75,
-  //         "quantity": 0
-  //     },
-  //     {
-  //         "productId": "5",
-  //         "productName": "Example Product 5",
-  //         "price": 12.00,
-  //         "quantity": 0
-  //     },
-  //     {
-  //         "productId": "6",
-  //         "productName": "Example Product 6",
-  //         "price": 29.99,
-  //         "quantity": 0
-  //     }
-  // ];
-
   var fetchProducts = /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var endpoint, response, _products;
+      var endpoint, response, products;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -100,8 +59,8 @@ document.addEventListener("DOMContentLoaded", function () {
             _context.next = 9;
             return response.json();
           case 9:
-            _products = _context.sent;
-            return _context.abrupt("return", _products);
+            products = _context.sent;
+            return _context.abrupt("return", products);
           case 13:
             _context.prev = 13;
             _context.t0 = _context["catch"](1);
@@ -120,13 +79,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //initialize cart in localstorage
   !localStorage.getItem("cart") && localStorage.setItem("cart", JSON.stringify([]));
-  var addProductToCart = function addProductToCart(productId) {
+  var addProductToCart = function addProductToCart(productId, products) {
     var cart = JSON.parse(localStorage.getItem('cart'));
     var product = products.find(function (product) {
-      return product.productId === productId;
+      return product.id === parseInt(productId);
     });
     var productExists = cart.some(function (product) {
-      return product.productId === productId;
+      return product.id === parseInt(productId);
     });
     if (!productExists) {
       if (product.quantity === 0) product.quantity = (product.quantity || 0) + 1;
@@ -134,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       //if it already exists find and update the quantity
       cart.forEach(function (product) {
-        if (product.productId === productId) {
+        if (product.id === parseInt(productId)) {
           product.quantity = (product.quantity || 0) + 1;
           return;
         }
@@ -145,9 +104,8 @@ document.addEventListener("DOMContentLoaded", function () {
   var removeProductFromCart = function removeProductFromCart(productId) {
     var cart = JSON.parse(localStorage.getItem('cart'));
     cart = cart.filter(function (item) {
-      return item.productId !== productId;
+      return item.id !== parseInt(productId);
     });
-    console.log(cart);
     localStorage.setItem('cart', JSON.stringify(cart));
   };
   var createCartItem = function createCartItem(product) {
@@ -273,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return cardDiv;
   };
   var toggleLoader = function toggleLoader() {
-    var loader = document.getElementById("loader");
+    var loader = document.getElementById("home-spinner");
     loader.classList.toggle("hidden");
   };
   var renderProducts = function renderProducts() {
@@ -281,7 +239,34 @@ document.addEventListener("DOMContentLoaded", function () {
     toggleLoader();
     fetchProducts().then(function (products) {
       products.forEach(function (product) {
-        return productCardContainer.appendChild(createProductCard(product));
+        productCardContainer.appendChild(createProductCard(product));
+        //add quantity property to each product with default starting value int 0
+        product.quantity = 0;
+      });
+      //attatch click event listener to add product Button
+      var addButtons = document.querySelectorAll('[data-add]');
+      addButtons && addButtons.forEach(function (addButton) {
+        return addButton.addEventListener("click", function (event) {
+          var eventTarget = event.target;
+          var addButton = eventTarget.closest("button");
+          var productId = addButton.getAttribute("data-add");
+          addProductToCart(productId, products);
+          //update cart after item is added
+          updateCart();
+        });
+      });
+
+      //attatch click event listener to remove product Button
+      var removeButtons = document.querySelectorAll('[data-remove]');
+      removeButtons && removeButtons.forEach(function (removeButton) {
+        return removeButton.addEventListener("click", function (event) {
+          var eventTarget = event.target;
+          var addButton = eventTarget.closest("button");
+          var productId = addButton.getAttribute("data-remove");
+          removeProductFromCart(productId);
+          //update cart after item is removed
+          updateCart();
+        });
       });
     })["catch"](function (error) {
       return console.error(error);
@@ -293,32 +278,6 @@ document.addEventListener("DOMContentLoaded", function () {
   //execute functions
   renderProducts();
   updateCart();
-
-  //attatch click event listener to add product Button
-  var addButtons = document.querySelectorAll('[data-add]');
-  addButtons && addButtons.forEach(function (addButton) {
-    return addButton.addEventListener("click", function (event) {
-      var eventTarget = event.target;
-      var addButton = eventTarget.closest("button");
-      var productId = addButton.getAttribute("data-add");
-      addProductToCart(productId);
-      //update cart after item is added
-      updateCart();
-    });
-  });
-
-  //attatch click event listener to remove product Button
-  var removeButtons = document.querySelectorAll('[data-remove]');
-  removeButtons && removeButtons.forEach(function (removeButton) {
-    return removeButton.addEventListener("click", function (event) {
-      var eventTarget = event.target;
-      var addButton = eventTarget.closest("button");
-      var productId = addButton.getAttribute("data-remove");
-      removeProductFromCart(productId);
-      //update cart after item is removed
-      updateCart();
-    });
-  });
 });
 /******/ })()
 ;

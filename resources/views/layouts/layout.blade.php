@@ -105,7 +105,7 @@
             {{$slot}}
         </main>
         <footer>
-
+            <script src="{{ asset('js/checkout.js') }}"></script>
         </footer>
     </body>
 </html>

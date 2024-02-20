@@ -33,46 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     [shoppingCartButton, backgroundBackdrop, shoppingCartCloseButton, continueShoppingButton].forEach((element) => element && element.addEventListener("click", handleShoppingCart));
 
-    //shopping cart functionality
-    // const products = [
-    //     {
-    //         "productId": "1",
-    //         "productName": "Example Product 1",
-    //         "price": 10.99,
-    //         "quantity": 0
-    //     },
-    //     {
-    //         "productId": "2",
-    //         "productName": "Example Product 2",
-    //         "price": 19.99,
-    //         "quantity": 0
-    //     },
-    //     {
-    //         "productId": "3",
-    //         "productName": "Example Product 3",
-    //         "price": 15.50,
-    //         "quantity": 0
-    //     },
-    //     {
-    //         "productId": "4",
-    //         "productName": "Example Product 4",
-    //         "price": 24.75,
-    //         "quantity": 0
-    //     },
-    //     {
-    //         "productId": "5",
-    //         "productName": "Example Product 5",
-    //         "price": 12.00,
-    //         "quantity": 0
-    //     },
-    //     {
-    //         "productId": "6",
-    //         "productName": "Example Product 6",
-    //         "price": 29.99,
-    //         "quantity": 0
-    //     }
-    // ];
-
     const fetchProducts = async () => {
         const endpoint = window.location.href + 'products';
         try {
@@ -93,17 +53,17 @@ document.addEventListener("DOMContentLoaded", () => {
     //initialize cart in localstorage
     !localStorage.getItem("cart") && localStorage.setItem("cart", JSON.stringify([]));
 
-    const addProductToCart = (productId) => {
+    const addProductToCart = (productId, products) => {
     const cart = JSON.parse(localStorage.getItem('cart'));
-    const product = products.find(product => product.productId === productId);
-    const productExists = cart.some((product) => product.productId === productId);
+    const product = products.find(product => product.id === parseInt(productId));
+    const productExists = cart.some((product) => product.id === parseInt(productId));
     if (!productExists) {
         if(product.quantity === 0) product.quantity = (product.quantity || 0) + 1;
         cart.push(product);
     } else {
         //if it already exists find and update the quantity
         cart.forEach((product) => {
-            if (product.productId === productId) {
+            if (product.id === parseInt(productId)) {
                 product.quantity = (product.quantity || 0) + 1;
                 return;
             }
@@ -114,8 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const removeProductFromCart = (productId) => {
         let cart = JSON.parse(localStorage.getItem('cart'));
-        cart = cart.filter(item => item.productId !== productId);
-        console.log(cart);
+        cart = cart.filter(item => item.id !== parseInt(productId));
         localStorage.setItem('cart', JSON.stringify(cart));
     }
 
@@ -241,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     
     const toggleLoader = () => {
-        const loader = document.getElementById("loader");
+        const loader = document.getElementById("home-spinner");
         loader.classList.toggle("hidden");
     }
 
@@ -249,23 +208,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const productCardContainer = document.querySelector("[data-element='product-container']");
         toggleLoader();
         fetchProducts().then((products) => {
-            products.forEach((product) => productCardContainer.appendChild(createProductCard(product)));
-        }).catch((error) => console.error(error)).finally(() => toggleLoader());
-        
-    }
-
-    
-    //execute functions
-    renderProducts();
-    updateCart();
-
-    //attatch click event listener to add product Button
+            products.forEach((product) => {
+                productCardContainer.appendChild(createProductCard(product));
+                //add quantity property to each product with default starting value int 0
+                product.quantity = 0;
+            });
+            //attatch click event listener to add product Button
     const addButtons = document.querySelectorAll('[data-add]');
     addButtons && addButtons.forEach((addButton) => addButton.addEventListener("click", (event) => {
         const eventTarget = (event.target);
         const addButton = eventTarget.closest("button");
         const productId = addButton.getAttribute("data-add");
-        addProductToCart(productId);
+        addProductToCart(productId, products);
         //update cart after item is added
         updateCart();
     }));
@@ -280,4 +234,12 @@ document.addEventListener("DOMContentLoaded", () => {
         //update cart after item is removed
         updateCart();
     }));
+        }).catch((error) => console.error(error)).finally(() => toggleLoader());
+        
+    }
+
+    
+    //execute functions
+    renderProducts();
+    updateCart();
 })

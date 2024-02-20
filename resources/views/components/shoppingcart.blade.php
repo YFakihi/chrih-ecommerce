@@ -35,7 +35,8 @@
                 </div>
                 <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
                 <div class="mt-6">
-                  <a href="#" class="flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-600">Checkout</a>
+                  <x-spinner type="checkout"/>
+                  <button class="flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-600 w-full" id="checkout-button">Checkout</button>
                 </div>
                 <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
                   <p>

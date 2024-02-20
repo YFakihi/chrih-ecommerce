@@ -17,3 +17,4 @@ mix.js('resources/js/app.js', 'public/js')
     ]);
 
 mix.js('resources/js/shoppingcart.js', 'public/js');
+mix.js('resources/js/checkout.js', 'public/js');
