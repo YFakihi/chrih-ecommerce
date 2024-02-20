@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return cardDiv;
   };
   var toggleLoader = function toggleLoader() {
-    var loader = document.getElementById("loader");
+    var loader = document.getElementById("home-spinner");
     loader.classList.toggle("hidden");
   };
   var renderProducts = function renderProducts() {

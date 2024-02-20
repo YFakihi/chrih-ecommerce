@@ -200,7 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     
     const toggleLoader = () => {
-        const loader = document.getElementById("loader");
+        const loader = document.getElementById("home-spinner");
         loader.classList.toggle("hidden");
     }
 
