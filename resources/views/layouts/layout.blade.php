@@ -13,7 +13,7 @@
             <nav>
                 <x-shoppingcart />
                 <nav>
-                    <div class="px-8 fixed w-full z-2000 bg-gray-800 shadow-sm">
+                    <div class="px-8 fixed w-full z-50 bg-gray-800 shadow-sm">
                       <div class="relative flex h-16 items-center justify-between">
                         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
                           <!-- Mobile menu button-->

@@ -163,11 +163,11 @@ document.addEventListener("DOMContentLoaded", () => {
         link.classList.add('relative', 'mx-3', 'mt-3', 'flex', 'h-60', 'overflow-hidden', 'rounded-xl');
         link.href = '#';
         const primaryImg = document.createElement('img');
-        primaryImg.classList.add('peer', 'absolute', 'top-0', 'right-0', 'h-full', 'w-full', 'object-cover');
+        primaryImg.classList.add('peer', 'absolute', 'top-0', 'right-0', 'h-full', 'w-full', 'object-cover', 'object-center');
         primaryImg.src = "https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60?a=b";
         primaryImg.alt = 'product image';
         const secondaryImg = document.createElement('img');
-        secondaryImg.classList.add('peer', 'peer-hover:right-0', 'absolute', 'top-0', '-right-96', 'h-full', 'w-full', 'object-cover', 'transition-all', 'delay-100', 'duration-1000', 'hover:right-0');
+        secondaryImg.classList.add('peer', 'peer-hover:right-0', 'absolute', 'top-0', '-right-96', 'h-full', 'w-full', 'object-cover', 'transition-all', 'delay-100', 'duration-1000', 'hover:right-0', 'object-center');
         secondaryImg.src = "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60";
         secondaryImg.alt = 'product image';
         const svg = `<svg class="group-hover:animate-ping group-hover:opacity-30 peer-hover:opacity-0 pointer-events-none absolute inset-x-0 bottom-5 mx-auto text-3xl text-white transition-opacity" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path fill="currentColor" d="M2 10a4 4 0 0 1 4-4h20a4 4 0 0 1 4 4v10a4 4 0 0 1-2.328 3.635a2.996 2.996 0 0 0-.55-.756l-8-8A3 3 0 0 0 14 17v7H6a4 4 0 0 1-4-4V10Zm14 19a1 1 0 0 0 1.8.6l2.7-3.6H25a1 1 0 0 0 .707-1.707l-8-8A1 1 0 0 0 16 17v12Z" /></svg>`;
@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const productCardContainer = document.querySelector("[data-element='product-container']");
         toggleLoader();
         fetchProducts().then((products) => {
-            products.forEach((product) => {
+            products.slice(0, 4).forEach((product) => {
                 productCardContainer.appendChild(createProductCard(product));
                 //add quantity property to each product with default starting value int 0
                 product.quantity = 0;
