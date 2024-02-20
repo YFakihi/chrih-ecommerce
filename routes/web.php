@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\HomeController;
 use TCG\Voyager\Facades\Voyager;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,11 @@ Route::get('/', function () {
 });
 
 Route::get('/products', [HomeController::class,'index']);
+Route::get('/register', [AuthController::class,'index']);
+
+Route::post('/register', [AuthController::class, 'store'])->name('newregister');
+
+
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
