@@ -4,14 +4,14 @@
  */
 
 //handle checkout
-
 const checkoutButton = document.getElementById("checkout-button");
 
 const postCheckoutCart = async () => {
+    const endpoint = window.location.origin + '/session';
     try {
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         const cartData = JSON.stringify(localStorage.getItem('cart'));
-        const response = await fetch('/checkout', {
+        const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -21,17 +21,16 @@ const postCheckoutCart = async () => {
         });
         if (response.ok) {
             const responseData = await response.json();
-            console.log(responseData);
+            return responseData;
         } else {
-            console.error('an error has occured during checkout');
+            throw new Error('an error has occured during checkout');
         }
     } catch (error) {
-        console.error('Error:', error);
+        throw new Error('Error:', error);
     }
 };
 
 //UX/UI
-
 const toggleCheckoutSpinner = (checkoutButton) => {
     const checkoutSpinner = document.getElementById("checkout-spinner");
     checkoutSpinner.classList.toggle("hidden");
@@ -43,8 +42,8 @@ const handleCheckout = (event) => {
     const checkoutButton = (event.target).closest("button");
     toggleCheckoutSpinner(checkoutButton)
     //call fetch function and handle stripe redirect
-    const cartData = JSON.stringify(localStorage.getItem('cart'));
-    console.log(cartData)
+    postCheckoutCart().then((response) => window.location.href = response).catch((error) => console.error(error))
+      .finally(() => toggleCheckoutSpinner(checkoutButton));
 }
 
 //add click event listener to checkout button

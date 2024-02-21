@@ -13,19 +13,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
  */
 
 //handle checkout
-
 var checkoutButton = document.getElementById("checkout-button");
 var postCheckoutCart = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-    var csrfToken, cartData, response, responseData;
+    var endpoint, csrfToken, cartData, response, responseData;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
-          _context.prev = 0;
+          endpoint = window.location.origin + '/session';
+          _context.prev = 1;
           csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
           cartData = JSON.stringify(localStorage.getItem('cart'));
-          _context.next = 5;
-          return fetch('/checkout', {
+          _context.next = 6;
+          return fetch(endpoint, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -33,33 +33,31 @@ var postCheckoutCart = /*#__PURE__*/function () {
             },
             body: cartData
           });
-        case 5:
+        case 6:
           response = _context.sent;
           if (!response.ok) {
-            _context.next = 13;
+            _context.next = 14;
             break;
           }
-          _context.next = 9;
+          _context.next = 10;
           return response.json();
-        case 9:
+        case 10:
           responseData = _context.sent;
-          console.log(responseData);
-          _context.next = 14;
-          break;
-        case 13:
-          console.error('an error has occured during checkout');
+          return _context.abrupt("return", responseData);
         case 14:
-          _context.next = 19;
+          throw new Error('an error has occured during checkout');
+        case 15:
+          _context.next = 20;
           break;
-        case 16:
-          _context.prev = 16;
-          _context.t0 = _context["catch"](0);
-          console.error('Error:', _context.t0);
-        case 19:
+        case 17:
+          _context.prev = 17;
+          _context.t0 = _context["catch"](1);
+          throw new Error('Error:', _context.t0);
+        case 20:
         case "end":
           return _context.stop();
       }
-    }, _callee, null, [[0, 16]]);
+    }, _callee, null, [[1, 17]]);
   }));
   return function postCheckoutCart() {
     return _ref.apply(this, arguments);
@@ -67,7 +65,6 @@ var postCheckoutCart = /*#__PURE__*/function () {
 }();
 
 //UX/UI
-
 var toggleCheckoutSpinner = function toggleCheckoutSpinner(checkoutButton) {
   var checkoutSpinner = document.getElementById("checkout-spinner");
   checkoutSpinner.classList.toggle("hidden");
@@ -78,8 +75,13 @@ var handleCheckout = function handleCheckout(event) {
   var checkoutButton = event.target.closest("button");
   toggleCheckoutSpinner(checkoutButton);
   //call fetch function and handle stripe redirect
-  var cartData = JSON.stringify(localStorage.getItem('cart'));
-  console.log(cartData);
+  postCheckoutCart().then(function (response) {
+    return window.location.href = response;
+  })["catch"](function (error) {
+    return console.error(error);
+  })["finally"](function () {
+    return toggleCheckoutSpinner(checkoutButton);
+  });
 };
 
 //add click event listener to checkout button

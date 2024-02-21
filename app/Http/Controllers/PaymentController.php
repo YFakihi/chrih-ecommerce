@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Stripe\Stripe;
-use Stripe\Checkout\Session;
+use Illuminate\Http\Request;
+use Stripe\checkout\Session;
 
 class PaymentController extends Controller
 {
@@ -16,23 +16,22 @@ class PaymentController extends Controller
     public function checkout(Request $request)
     {
         Stripe::setApiKey(env('STRIPE_SECRET_KEY')); 
-        $requestData = $request->all();
+        $requestData = json_decode($request->all()[0]);
 
         $lineItems = [];
-
         // Check if products are present in the request
-        if (isset($requestData['products']) && is_array($requestData['products'])) {
-            foreach ($requestData['products'] as $product) {
+        if (isset($requestData) && is_array($requestData)) {
+            foreach ($requestData as $product) {
                 // Validate each product has required attributes
-                if (isset($product['name'], $product['description'], $product['price'])) {
+                if (isset($product->name, $product->description, $product->price)) {
                     $lineItems[] = [
                         'price_data' => [
                             'currency' => 'usd',
                             'product_data' => [
-                                'name' => $product['name'],
-                                'description' => $product['description'],
+                                'name' => $product->name,
+                                'description' => $product->description,
                             ],
-                            'unit_amount' => $product['price'] * 100,
+                            'unit_amount' => $product->price * 100,
                         ],
                         'quantity' => 1,
                     ];
@@ -47,7 +46,7 @@ class PaymentController extends Controller
             // 'cancel_url' => route('checkout.cancel', [], true),
         ]); 
 
-        return response()->json(['checkout_url' => $session->url]);
+        return response()->json($session->url);
     }
     
     public function StripeCheckout(Request $request)
