@@ -4,15 +4,17 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class Spinner extends Component
+class hero extends Component
 {
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct(
-    ) {}
+    public function __construct()
+    {
+        //
+    }
 
     /**
      * Get the view / contents that represent the component.
@@ -21,6 +23,6 @@ class Spinner extends Component
      */
     public function render()
     {
-        return view('components.spinner');
+        return view('components.hero');
     }
 }
