@@ -241,14 +241,15 @@ document.addEventListener("DOMContentLoaded", function () {
     var searchInput = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     var numOfProducts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 8;
     var productCardContainer = document.querySelector("[data-element='product-container']");
-    while (productCardContainer.firstChild && productCardContainer.firstChild.role !== "status") productCardContainer.removeChild(productCardContainer.firstChild);
     toggleLoader();
     fetchProducts().then(function (products) {
-      products.filter(function (product) {
-        return product.name.toLowerCase().includes(searchInput);
-      }).slice(0, numOfProducts).forEach(function (product) {
+      while (productCardContainer.lastChild && productCardContainer.lastChild.role !== "status") productCardContainer.removeChild(productCardContainer.lastChild);
+      var filteredProducts = products.filter(function (product) {
+        return product.name.toLowerCase().trim().includes(searchInput);
+      });
+      filteredProducts.slice(0, numOfProducts).forEach(function (product) {
         productCardContainer.appendChild(createProductCard(product));
-        //add quantity property to each product with default starting value int 0
+        // Add quantity property to each product with a default starting value of 0
         product.quantity = 0;
       });
       //attatch click event listener to add product Button
@@ -323,11 +324,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //handle search filter
   var searchInputContainer = document.getElementById("default-search");
-  var handleSearchFilter = function handleSearchFilter(event) {
-    searchInput = event.target.value.trim();
-    renderProducts(searchInput, 16);
+  var updateSearchInput = function updateSearchInput(event) {
+    return searchInput = event.target.value.trim();
   };
-  searchInputContainer && searchInputContainer.addEventListener("input", handleSearchFilter);
+  searchInputContainer && searchInputContainer.addEventListener("input", updateSearchInput);
+
+  //search filter on seach button click
+  var searchFilterButton = document.getElementById('search-button');
+  searchFilterButton && searchFilterButton.addEventListener("click", function (event) {
+    event.preventDefault();
+    renderProducts(searchInput, 16);
+  });
 });
 /******/ })()
 ;
