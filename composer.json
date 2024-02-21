@@ -12,6 +12,7 @@
         "laravel/sanctum": "^2.14",
         "laravel/tinker": "^2.7",
         "mollie/laravel-mollie": "^2.25",
+        "scratcher28/php-exif": "^0.7.3",
         "stripe/stripe-php": "^13.11",
         "tcg/voyager": "^1.7"
     },

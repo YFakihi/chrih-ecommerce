@@ -22,6 +22,8 @@ class PaymentController extends Controller
 
         // Check if products are present in the request
         if (isset($requestData['products']) && is_array($requestData['products'])) {
+
+            
             foreach ($requestData['products'] as $product) {
                 // Validate each product has required attributes
                 if (isset($product['name'], $product['description'], $product['price'])) {
