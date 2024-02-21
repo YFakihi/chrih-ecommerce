@@ -209,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const productCardContainer = document.querySelector("[data-element='product-container']");
         toggleLoader();
         fetchProducts().then((products) => {
-            products.slice(0, 4).forEach((product) => {
+            products.slice(0, 8).forEach((product) => {
                 productCardContainer.appendChild(createProductCard(product));
                 //add quantity property to each product with default starting value int 0
                 product.quantity = 0;
@@ -240,17 +240,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     //handle navbar sticky after scrolled past its height
+    const heroSection = document.getElementById("hero-section");
+    const heroContainer = document.getElementById("hero-container");
     const navbar = document.getElementById("navbar");
-    const navbarHeight = navbar.offsetHeight; 
+    const heroSectionHeight = heroSection.offsetTop; 
+    
     const handleNavbar = () => {
         const scrollPosition = window.scrollY || document.documentElement.scrollTop;
-        if (scrollPosition >= navbarHeight) 
-                navbar.classList.add("fixed");
-        else
-            navbar.classList.remove("fixed");
+    
+        if (scrollPosition >= heroSectionHeight) {
+            navbar.classList.add("fixed", "animate-slidedown");
+            heroContainer.classList.add("pt-16");
+        } else {
+            navbar.classList.remove("animate-slidedown", "fixed");
+            heroContainer.classList.remove("pt-16");
+        }
     }
-
+    
     window.addEventListener("scroll", handleNavbar);
+    
 
     //execute functions
     renderProducts();

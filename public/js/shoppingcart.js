@@ -239,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var productCardContainer = document.querySelector("[data-element='product-container']");
     toggleLoader();
     fetchProducts().then(function (products) {
-      products.slice(0, 4).forEach(function (product) {
+      products.slice(0, 8).forEach(function (product) {
         productCardContainer.appendChild(createProductCard(product));
         //add quantity property to each product with default starting value int 0
         product.quantity = 0;
@@ -277,11 +277,19 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   //handle navbar sticky after scrolled past its height
+  var heroSection = document.getElementById("hero-section");
+  var heroContainer = document.getElementById("hero-container");
   var navbar = document.getElementById("navbar");
-  var navbarHeight = navbar.offsetHeight;
+  var heroSectionHeight = heroSection.offsetTop;
   var handleNavbar = function handleNavbar() {
     var scrollPosition = window.scrollY || document.documentElement.scrollTop;
-    if (scrollPosition >= navbarHeight) navbar.classList.add("fixed");else navbar.classList.remove("fixed");
+    if (scrollPosition >= heroSectionHeight) {
+      navbar.classList.add("fixed", "animate-slidedown");
+      heroContainer.classList.add("pt-16");
+    } else {
+      navbar.classList.remove("animate-slidedown", "fixed");
+      heroContainer.classList.remove("pt-16");
+    }
   };
   window.addEventListener("scroll", handleNavbar);
 
