@@ -209,12 +209,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const renderProducts = (searchInput = '', numOfProducts = 8) => {
         const productCardContainer = document.querySelector("[data-element='product-container']");
-        while (productCardContainer.firstChild && productCardContainer.firstChild.role !== "status") productCardContainer.removeChild(productCardContainer.firstChild);
         toggleLoader();
         fetchProducts().then((products) => {
-            products.filter(product => product.name.toLowerCase().includes(searchInput)).slice(0, numOfProducts).forEach((product) => {
+            while (productCardContainer.lastChild && productCardContainer.lastChild.role !== "status") productCardContainer.removeChild(productCardContainer.lastChild);
+            const filteredProducts = products.filter(product => product.name.toLowerCase().trim().includes(searchInput));
+            filteredProducts.slice(0, numOfProducts)
+            .forEach((product) => {
                 productCardContainer.appendChild(createProductCard(product));
-                //add quantity property to each product with default starting value int 0
+                // Add quantity property to each product with a default starting value of 0
                 product.quantity = 0;
             });
             //attatch click event listener to add product Button
@@ -290,10 +292,15 @@ document.addEventListener("DOMContentLoaded", () => {
     //handle search filter
     const searchInputContainer = document.getElementById("default-search");
 
-    const handleSearchFilter = (event) => {
-        searchInput = event.target.value.trim();
-        renderProducts(searchInput, 16);
-    }
+    const updateSearchInput = (event) => searchInput = event.target.value.trim();
 
-    searchInputContainer && searchInputContainer.addEventListener("input", handleSearchFilter)
+    searchInputContainer && searchInputContainer.addEventListener("input", updateSearchInput)
+
+    //search filter on seach button click
+    const searchFilterButton = document.getElementById('search-button');
+
+    searchFilterButton && searchFilterButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        renderProducts(searchInput, 16);
+    });
 })
