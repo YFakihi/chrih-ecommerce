@@ -41,8 +41,8 @@ return [
     |
     */
 
-    'models' => [
-        'namespace' => 'TCG\\Voyager\\Models\\',
+    'models' => [   
+        'namespace' => 'App\\Models\\',
     ],
     /*
     |--------------------------------------------------------------------------
