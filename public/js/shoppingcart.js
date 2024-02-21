@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
-            endpoint = window.location.href + 'products';
+            endpoint = window.location.origin + '/products';
             _context.prev = 1;
             _context.next = 4;
             return fetch(endpoint);
@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
     detailsDiv.classList.add('ml-4', 'flex', 'flex-1', 'flex-col');
     var innerDiv1 = document.createElement('div');
     var titlePriceDiv = document.createElement('div');
-    titlePriceDiv.classList.add('flex', 'justify-between', 'text-base', 'font-medium', 'text-gray-900');
+    titlePriceDiv.classList.add('flex', 'justify-between', 'text-base', 'font-medium', 'text-slate-50');
     var productTitle = document.createElement('h3');
     productTitle.innerHTML = '<a href="#">' + product.name + '</a>';
     var price = document.createElement('p');
@@ -195,11 +195,11 @@ document.addEventListener("DOMContentLoaded", function () {
     link.classList.add('relative', 'mx-3', 'mt-3', 'flex', 'h-60', 'overflow-hidden', 'rounded-xl');
     link.href = '#';
     var primaryImg = document.createElement('img');
-    primaryImg.classList.add('peer', 'absolute', 'top-0', 'right-0', 'h-full', 'w-full', 'object-cover');
+    primaryImg.classList.add('peer', 'absolute', 'top-0', 'right-0', 'h-full', 'w-full', 'object-center');
     primaryImg.src = "https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60?a=b";
     primaryImg.alt = 'product image';
     var secondaryImg = document.createElement('img');
-    secondaryImg.classList.add('peer', 'peer-hover:right-0', 'absolute', 'top-0', '-right-96', 'h-full', 'w-full', 'object-cover', 'transition-all', 'delay-100', 'duration-1000', 'hover:right-0');
+    secondaryImg.classList.add('peer', 'peer-hover:right-0', 'absolute', 'top-0', '-right-96', 'h-full', 'w-full', 'object-cover', 'transition-all', 'delay-100', 'duration-1000', 'hover:right-0', 'object-center');
     secondaryImg.src = "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60";
     secondaryImg.alt = 'product image';
     var svg = "<svg class=\"group-hover:animate-ping group-hover:opacity-30 peer-hover:opacity-0 pointer-events-none absolute inset-x-0 bottom-5 mx-auto text-3xl text-white transition-opacity\" xmlns=\"http://www.w3.org/2000/svg\" aria-hidden=\"true\" role=\"img\" width=\"1em\" height=\"1em\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 32 32\"><path fill=\"currentColor\" d=\"M2 10a4 4 0 0 1 4-4h20a4 4 0 0 1 4 4v10a4 4 0 0 1-2.328 3.635a2.996 2.996 0 0 0-.55-.756l-8-8A3 3 0 0 0 14 17v7H6a4 4 0 0 1-4-4V10Zm14 19a1 1 0 0 0 1.8.6l2.7-3.6H25a1 1 0 0 0 .707-1.707l-8-8A1 1 0 0 0 16 17v12Z\" /></svg>";
@@ -217,11 +217,11 @@ document.addEventListener("DOMContentLoaded", function () {
     var priceDiv = document.createElement('div');
     priceDiv.classList.add('mt-2', 'mb-5', 'flex', 'items-center', 'justify-between');
     var price = document.createElement('p');
-    price.innerHTML = "<span class=\"text-3xl font-bold text-white\">$".concat(product.price, "</span><span class=\"text-sm text-white line-through\">").concat(product.price, "</span>");
+    price.innerHTML = "<span class=\"text-3xl font-bold text-white\">$".concat(product.price, "</span><span class=\"text-sm text-white line-through\">$").concat(product.price, "</span>");
     priceDiv.appendChild(price);
     var addButton = document.createElement('button');
     addButton.setAttribute("data-add", product.id);
-    addButton.classList.add('hover:border-white/40', 'flex', 'items-center', 'justify-center', 'rounded-md', 'border', 'border-transparent', 'bg-blue-600', 'px-5', 'py-2.5', 'text-center', 'text-sm', 'font-medium', 'text-white', 'focus:outline-none', 'focus:ring-4', 'focus:ring-blue-300', 'w-full');
+    addButton.classList.add('flex', 'items-center', 'justify-center', 'rounded-md', 'border', 'border-transparent', 'bg-blue-700', 'px-5', 'py-2.5', 'text-center', 'text-sm', 'font-medium', 'text-white', 'focus:outline-none', 'focus:ring-4', 'focus:ring-primary-900', 'w-full', 'hover:bg-primary-800');
     addButton.innerHTML = "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"mr-2 h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"2\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z\" /></svg>Add to cart";
     detailsDiv.appendChild(productLink);
     detailsDiv.appendChild(priceDiv);
@@ -239,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var productCardContainer = document.querySelector("[data-element='product-container']");
     toggleLoader();
     fetchProducts().then(function (products) {
-      products.forEach(function (product) {
+      products.slice(0, 4).forEach(function (product) {
         productCardContainer.appendChild(createProductCard(product));
         //add quantity property to each product with default starting value int 0
         product.quantity = 0;
@@ -275,6 +275,15 @@ document.addEventListener("DOMContentLoaded", function () {
       return toggleLoader();
     });
   };
+
+  //handle navbar sticky after scrolled past its height
+  var navbar = document.getElementById("navbar");
+  var navbarHeight = navbar.offsetHeight;
+  var handleNavbar = function handleNavbar() {
+    var scrollPosition = window.scrollY || document.documentElement.scrollTop;
+    if (scrollPosition >= navbarHeight) navbar.classList.add("fixed");else navbar.classList.remove("fixed");
+  };
+  window.addEventListener("scroll", handleNavbar);
 
   //execute functions
   renderProducts();

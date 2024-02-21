@@ -78,7 +78,8 @@ var handleCheckout = function handleCheckout(event) {
   var checkoutButton = event.target.closest("button");
   toggleCheckoutSpinner(checkoutButton);
   //call fetch function and handle stripe redirect
-  console.log("triggered");
+  var cartData = JSON.stringify(localStorage.getItem('cart'));
+  console.log(cartData);
 };
 
 //add click event listener to checkout button
