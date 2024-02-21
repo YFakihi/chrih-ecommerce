@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
     detailsDiv.classList.add('ml-4', 'flex', 'flex-1', 'flex-col');
     var innerDiv1 = document.createElement('div');
     var titlePriceDiv = document.createElement('div');
-    titlePriceDiv.classList.add('flex', 'justify-between', 'text-base', 'font-medium', 'text-gray-900');
+    titlePriceDiv.classList.add('flex', 'justify-between', 'text-base', 'font-medium', 'text-slate-50');
     var productTitle = document.createElement('h3');
     productTitle.innerHTML = '<a href="#">' + product.name + '</a>';
     var price = document.createElement('p');

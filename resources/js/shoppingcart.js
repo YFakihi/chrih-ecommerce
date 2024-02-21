@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
         detailsDiv.classList.add('ml-4', 'flex', 'flex-1', 'flex-col');
         const innerDiv1 = document.createElement('div');
         const titlePriceDiv = document.createElement('div');
-        titlePriceDiv.classList.add('flex', 'justify-between', 'text-base', 'font-medium', 'text-gray-900');
+        titlePriceDiv.classList.add('flex', 'justify-between', 'text-base', 'font-medium', 'text-slate-50');
         const productTitle = document.createElement('h3');
         productTitle.innerHTML = '<a href="#">' + product.name + '</a>';
         const price = document.createElement('p');
