@@ -12,6 +12,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
  * @license GPL-3.0
  */
 
+//keep track of search input
+var searchInput = "";
 document.addEventListener("DOMContentLoaded", function () {
   var shoppingCartButton = document.querySelector("[data-element='cart-button']");
   var shoppingcart = document.querySelector("[data-element='shopping-cart']");
@@ -236,12 +238,18 @@ document.addEventListener("DOMContentLoaded", function () {
     loader.classList.toggle("flex");
   };
   var renderProducts = function renderProducts() {
+    var searchInput = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+    var numOfProducts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 8;
     var productCardContainer = document.querySelector("[data-element='product-container']");
     toggleLoader();
     fetchProducts().then(function (products) {
-      products.slice(0, 8).forEach(function (product) {
+      while (productCardContainer.lastChild && productCardContainer.lastChild.role !== "status") productCardContainer.removeChild(productCardContainer.lastChild);
+      var filteredProducts = products.filter(function (product) {
+        return product.name.toLowerCase().trim().includes(searchInput);
+      });
+      filteredProducts.slice(0, numOfProducts).forEach(function (product) {
         productCardContainer.appendChild(createProductCard(product));
-        //add quantity property to each product with default starting value int 0
+        // Add quantity property to each product with a default starting value of 0
         product.quantity = 0;
       });
       //attatch click event listener to add product Button
@@ -277,25 +285,56 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   //handle navbar sticky after scrolled past its height
-  var heroSection = document.getElementById("hero-section");
-  var heroContainer = document.getElementById("hero-container");
+  var limitContainer = document.querySelector("[data-limit]");
   var navbar = document.getElementById("navbar");
-  var heroSectionHeight = heroSection.offsetTop;
   var handleNavbar = function handleNavbar() {
     var scrollPosition = window.scrollY || document.documentElement.scrollTop;
-    if (scrollPosition >= heroSectionHeight) {
+    var sectionHeight = limitContainer.offsetTop + parseInt(getComputedStyle(limitContainer).paddingTop);
+    if (scrollPosition >= sectionHeight) {
       navbar.classList.add("fixed", "animate-slidedown");
-      heroContainer.classList.add("pt-16");
+      limitContainer.classList.add("pt-16");
     } else {
       navbar.classList.remove("animate-slidedown", "fixed");
-      heroContainer.classList.remove("pt-16");
+      limitContainer.classList.remove("pt-16");
     }
   };
   window.addEventListener("scroll", handleNavbar);
 
   //execute functions
-  renderProducts();
+  var currentRoute = window.location.pathname;
+  switch (currentRoute) {
+    case "/view/products":
+      renderProducts(searchInput, 16);
+      break;
+    default:
+      renderProducts(searchInput, 8);
+      break;
+  }
   updateCart();
+
+  // handle content filtering
+
+  //toggle category filter
+  var toggleDropdownButton = document.querySelector('[data-dropdown-toggle="dropdown"]');
+  var toggleCategoryDropdownMenu = function toggleCategoryDropdownMenu() {
+    var dropdownMenu = document.getElementById("dropdown");
+    dropdownMenu.classList.toggle("hidden");
+  };
+  toggleDropdownButton && toggleDropdownButton.addEventListener("click", toggleCategoryDropdownMenu);
+
+  //handle search filter
+  var searchInputContainer = document.getElementById("default-search");
+  var updateSearchInput = function updateSearchInput(event) {
+    return searchInput = event.target.value.trim();
+  };
+  searchInputContainer && searchInputContainer.addEventListener("input", updateSearchInput);
+
+  //search filter on seach button click
+  var searchFilterButton = document.getElementById('search-button');
+  searchFilterButton && searchFilterButton.addEventListener("click", function (event) {
+    event.preventDefault();
+    renderProducts(searchInput, 16);
+  });
 });
 /******/ })()
 ;

@@ -3,6 +3,8 @@
  * @license GPL-3.0
  */
 
+//keep track of search input
+let searchInput = "";
 
 document.addEventListener("DOMContentLoaded", () => {
     const shoppingCartButton = document.querySelector("[data-element='cart-button']");
@@ -205,13 +207,16 @@ document.addEventListener("DOMContentLoaded", () => {
         loader.classList.toggle("flex");
     }
 
-    const renderProducts = () => {
+    const renderProducts = (searchInput = '', numOfProducts = 8) => {
         const productCardContainer = document.querySelector("[data-element='product-container']");
         toggleLoader();
         fetchProducts().then((products) => {
-            products.slice(0, 8).forEach((product) => {
+            while (productCardContainer.lastChild && productCardContainer.lastChild.role !== "status") productCardContainer.removeChild(productCardContainer.lastChild);
+            const filteredProducts = products.filter(product => product.name.toLowerCase().trim().includes(searchInput));
+            filteredProducts.slice(0, numOfProducts)
+            .forEach((product) => {
                 productCardContainer.appendChild(createProductCard(product));
-                //add quantity property to each product with default starting value int 0
+                // Add quantity property to each product with a default starting value of 0
                 product.quantity = 0;
             });
             //attatch click event listener to add product Button
@@ -240,20 +245,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     //handle navbar sticky after scrolled past its height
-    const heroSection = document.getElementById("hero-section");
-    const heroContainer = document.getElementById("hero-container");
+    const limitContainer = document.querySelector("[data-limit]");
     const navbar = document.getElementById("navbar");
-    const heroSectionHeight = heroSection.offsetTop; 
-    
+
     const handleNavbar = () => {
         const scrollPosition = window.scrollY || document.documentElement.scrollTop;
-    
-        if (scrollPosition >= heroSectionHeight) {
+        let sectionHeight = limitContainer.offsetTop + parseInt(getComputedStyle(limitContainer).paddingTop);
+        if (scrollPosition >= sectionHeight) {
             navbar.classList.add("fixed", "animate-slidedown");
-            heroContainer.classList.add("pt-16");
+            limitContainer.classList.add("pt-16");
         } else {
             navbar.classList.remove("animate-slidedown", "fixed");
-            heroContainer.classList.remove("pt-16");
+            limitContainer.classList.remove("pt-16");
         }
     }
     
@@ -261,6 +264,43 @@ document.addEventListener("DOMContentLoaded", () => {
     
 
     //execute functions
-    renderProducts();
+    const currentRoute = window.location.pathname;
+
+    switch (currentRoute) {
+        case "/view/products":
+            renderProducts(searchInput, 16)
+            break;
+        default:
+            renderProducts(searchInput, 8);
+            break;
+    }
+
     updateCart();
+
+    // handle content filtering
+
+    //toggle category filter
+    const toggleDropdownButton = document.querySelector('[data-dropdown-toggle="dropdown"]');
+
+    const toggleCategoryDropdownMenu = () => {
+        const dropdownMenu = document.getElementById("dropdown");
+        dropdownMenu.classList.toggle("hidden");
+    }
+
+    toggleDropdownButton && toggleDropdownButton.addEventListener("click", toggleCategoryDropdownMenu);
+
+    //handle search filter
+    const searchInputContainer = document.getElementById("default-search");
+
+    const updateSearchInput = (event) => searchInput = event.target.value.trim();
+
+    searchInputContainer && searchInputContainer.addEventListener("input", updateSearchInput)
+
+    //search filter on seach button click
+    const searchFilterButton = document.getElementById('search-button');
+
+    searchFilterButton && searchFilterButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        renderProducts(searchInput, 16);
+    });
 })
