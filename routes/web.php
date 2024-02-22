@@ -25,6 +25,10 @@ Route::get('/products', [HomeController::class,'index']);
 
 Route::get('/registerform', [AuthController::class,'index'])->name('register');
 
+Route::get('/login', [AuthController::class,'login'])->name('login');
+Route::post('/login',[AuthController::class,'auth'])->name('Auth');
+
+
 Route::post('/register', [AuthController::class, 'store'])->name('newregister');
 
 Route::post('/logout',[AuthController::class,'logout'])->name('logout');         
