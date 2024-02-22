@@ -17,7 +17,7 @@ class HomeController extends Controller
     public function index()
     {
         try {
-            $products = Product::orderBy('created_at', 'desc')->get();
+            $products = Product::with('category')->orderBy('created_at', 'desc')->get();
             return response()->json($products, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'products not found. errorcode: ' . $e->getMessage()], 404);
