@@ -33,7 +33,7 @@ class PaymentController extends Controller
                             ],
                             'unit_amount' => $product->price * 100,
                         ],
-                        'quantity' => 1,
+                        'quantity' => $product->quantity,
                     ];
                 }
             }

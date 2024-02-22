@@ -237,25 +237,6 @@ document.addEventListener("DOMContentLoaded", function () {
     loader.classList.toggle("hidden");
     loader.classList.toggle("flex");
   };
-
-  // Define a global variable to store categories
-  var categories = [];
-  var populateCategories = function populateCategories(products) {
-    var categoryContainer = document.querySelector("[data-element='category-container']");
-    if (!categoryContainer) return; //exit if category container doesnt exist on current page
-    var addedCategories = new Set(); //remove duplicate category names
-    while (categoryContainer.firstChild) categoryContainer.removeChild(categoryContainer.firstChild);
-    products.forEach(function (product) {
-      var categoryName = product.category.name;
-      if (!addedCategories.has(categoryName)) {
-        categoryContainer.appendChild(generateCategory(categoryName));
-        addedCategories.add(categoryName);
-      }
-    });
-    categories = Array.from(addedCategories);
-  };
-
-  // Function to render products
   var renderProducts = function renderProducts() {
     var searchInput = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     var numOfProducts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 8;
@@ -263,9 +244,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var productCardContainer = document.querySelector("[data-element='product-container']");
     toggleLoader();
     fetchProducts().then(function (products) {
-      while (productCardContainer.lastChild && productCardContainer.lastChild.role !== "status") {
-        productCardContainer.removeChild(productCardContainer.lastChild);
-      }
+      while (productCardContainer.lastChild && productCardContainer.lastChild.role !== "status") productCardContainer.removeChild(productCardContainer.lastChild);
       var filteredProducts = products.filter(function (product) {
         var productNameMatches = product.name.toLowerCase().trim().includes(searchInput);
         var categoryMatches = category === '' || product.category.name.toLowerCase().trim() === category.toLowerCase().trim();
@@ -273,7 +252,45 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       filteredProducts.slice(0, numOfProducts).forEach(function (product) {
         productCardContainer.appendChild(createProductCard(product));
+        // Add quantity property to each product with a default starting value of 0
         product.quantity = 0;
+      });
+      //attatch click event listener to add product Button
+      var addButtons = document.querySelectorAll('[data-add]');
+      addButtons && addButtons.forEach(function (addButton) {
+        return addButton.addEventListener("click", function (event) {
+          var eventTarget = event.target;
+          var addButton = eventTarget.closest("button");
+          var productId = addButton.getAttribute("data-add");
+          addProductToCart(productId, products);
+          //update cart after item is added
+          updateCart();
+        });
+      });
+
+      //attatch click event listener to remove product Button
+      var removeButtons = document.querySelectorAll('[data-remove]');
+      removeButtons && removeButtons.forEach(function (removeButton) {
+        return removeButton.addEventListener("click", function (event) {
+          var eventTarget = event.target;
+          var addButton = eventTarget.closest("button");
+          var productId = addButton.getAttribute("data-remove");
+          removeProductFromCart(productId);
+          //update cart after item is removed
+          updateCart();
+        });
+      });
+
+      //handle categories
+      populateCategories(products);
+      //handle category filtering
+      var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      var filterByCategory = function filterByCategory(event) {
+        var checkbox = event.target;
+        if (checkbox.checked) renderProducts(searchInput, 16, checkbox.name);
+      };
+      checkboxes.forEach(function (checkbox) {
+        return checkbox.addEventListener("change", filterByCategory);
       });
     })["catch"](function (error) {
       return console.error(error);
@@ -281,26 +298,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return toggleLoader();
     });
   };
-  window.addEventListener('DOMContentLoaded', function () {
-    toggleLoader();
-    fetchProducts().then(function (products) {
-      populateCategories(products);
-      renderProducts('', 20);
-    })["catch"](function (error) {
-      return console.error(error);
-    })["finally"](function () {
-      return toggleLoader();
-    });
-  });
-  var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-  var filterByCategory = function filterByCategory(event) {
-    console.log("triggered");
-    var checkbox = event.target;
-    if (checkbox.checked) renderProducts(searchInput, 16, checkbox.name);
-  };
-  checkboxes.forEach(function (checkbox) {
-    return checkbox.addEventListener("change", filterByCategory);
-  });
 
   //handle navbar sticky after scrolled past its height
   var limitContainer = document.querySelector("[data-limit]");
@@ -355,6 +352,19 @@ document.addEventListener("DOMContentLoaded", function () {
     li.appendChild(checkbox);
     li.appendChild(label);
     return li;
+  };
+  var populateCategories = function populateCategories(products) {
+    var categoryContainer = document.querySelector("[data-element='category-container']");
+    if (!categoryContainer) return; //exit if category container doesnt exist on current page
+    var addedCategories = new Set(); //remove duplicate category names
+    while (categoryContainer.firstChild) categoryContainer.removeChild(categoryContainer.firstChild);
+    products.forEach(function (product) {
+      var categoryName = product.category.name;
+      if (!addedCategories.has(categoryName)) {
+        categoryContainer.appendChild(generateCategory(categoryName));
+        addedCategories.add(categoryName);
+      }
+    });
   };
 
   //handle search filter
