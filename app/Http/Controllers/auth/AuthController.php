@@ -15,6 +15,29 @@ class AuthController extends Controller
         }
         return view('auth.register');    
     }
+
+    public function login(){
+        if (auth()->check()){
+            return redirect('/');
+        }
+        return view('auth.login');    
+    }
+
+
+    public function auth(Request $request){
+        if(auth()->attempt([
+            'email' => $request->email,
+            'password' => $request->password
+        ]))
+        {
+            return redirect('/');
+        }
+        else{
+          return redirect('/login')->with([
+            'error'=>'invalid!!!!!!!!!!!'
+          ]);
+        }
+    }
     public function store(Request $request)
     {
         
@@ -32,5 +55,10 @@ class AuthController extends Controller
         auth()->login($user);
         return redirect('/');
     }
+
+    public function logout(){
+        auth()->logout();
+        return redirect('/');
+ }
     
 }

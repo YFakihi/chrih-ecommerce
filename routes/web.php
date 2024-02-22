@@ -22,11 +22,16 @@ Route::get('/', function () {
 })->name('home.index');
 
 Route::get('/products', [HomeController::class,'index']);
-Route::get('/register', [AuthController::class,'index']);
+
+Route::get('/registerform', [AuthController::class,'index'])->name('register');
+
+Route::get('/login', [AuthController::class,'login'])->name('login');
+Route::post('/login',[AuthController::class,'auth'])->name('Auth');
+
 
 Route::post('/register', [AuthController::class, 'store'])->name('newregister');
 
-
+Route::post('/logout',[AuthController::class,'logout'])->name('logout');         
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
@@ -34,11 +39,9 @@ Route::group(['prefix' => 'admin'], function () {
 
 Route::get('/checkout', [PaymentController::class,'index'])->name('checkout');
 Route::post('/session', [PaymentController::class,'checkout']);
-Route::get('/success', [PaymentController::class,'success'])->name('checkout.success'); 
+Route::get('/success', [PaymentController::class,'success'])->name('success'); 
+
 
 Route::get('/view/products', function () {
     return view('products');
 })->name('products.index');
-// Route::get('/', 'App\Http\Controllers\StripeController@checkout')->name('checkout');
-// Route::post('/session', 'App\Http\Controllers\StripeController@session')->name('session');
-// Route::get('/success', 'App\Http\Controllers\StripeController@success')->name('success');
