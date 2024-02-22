@@ -207,42 +207,60 @@ document.addEventListener("DOMContentLoaded", () => {
         loader.classList.toggle("flex");
     }
 
-    const renderProducts = (searchInput = '', numOfProducts = 8) => {
-        const productCardContainer = document.querySelector("[data-element='product-container']");
-        toggleLoader();
-        fetchProducts().then((products) => {
-            while (productCardContainer.lastChild && productCardContainer.lastChild.role !== "status") productCardContainer.removeChild(productCardContainer.lastChild);
-            const filteredProducts = products.filter(product => product.name.toLowerCase().trim().includes(searchInput));
-            filteredProducts.slice(0, numOfProducts)
+    // Define a global variable to store categories
+let categories = [];
+
+const populateCategories = (products) => {
+    const categoryContainer = document.querySelector("[data-element='category-container']");
+    if (!categoryContainer) return; //exit if category container doesnt exist on current page
+    const addedCategories = new Set(); //remove duplicate category names
+    while (categoryContainer.firstChild) categoryContainer.removeChild(categoryContainer.firstChild);
+    products.forEach(product => {
+        const categoryName = product.category.name;
+        if (!addedCategories.has(categoryName)) {
+            categoryContainer.appendChild(generateCategory(categoryName));
+            addedCategories.add(categoryName);
+        }
+    });
+    categories = Array.from(addedCategories);
+}
+
+// Function to render products
+const renderProducts = (searchInput = '', numOfProducts = 8, category = '') => {
+    const productCardContainer = document.querySelector("[data-element='product-container']");
+    toggleLoader();
+    fetchProducts().then((products) => {
+        while (productCardContainer.lastChild && productCardContainer.lastChild.role !== "status") {
+            productCardContainer.removeChild(productCardContainer.lastChild);
+        }
+        const filteredProducts = products.filter(product => {
+            const productNameMatches = product.name.toLowerCase().trim().includes(searchInput);
+            const categoryMatches = category === '' || product.category.name.toLowerCase().trim() === category.toLowerCase().trim();
+            return productNameMatches && categoryMatches;
+        });
+        filteredProducts.slice(0, numOfProducts)
             .forEach((product) => {
                 productCardContainer.appendChild(createProductCard(product));
-                // Add quantity property to each product with a default starting value of 0
                 product.quantity = 0;
             });
-            //attatch click event listener to add product Button
-    const addButtons = document.querySelectorAll('[data-add]');
-    addButtons && addButtons.forEach((addButton) => addButton.addEventListener("click", (event) => {
-        const eventTarget = (event.target);
-        const addButton = eventTarget.closest("button");
-        const productId = addButton.getAttribute("data-add");
-        addProductToCart(productId, products);
-        //update cart after item is added
-        updateCart();
-    }));
-
-    //attatch click event listener to remove product Button
-    const removeButtons = document.querySelectorAll('[data-remove]');
-    removeButtons && removeButtons.forEach((removeButton) => removeButton.addEventListener("click", (event) => {
-        const eventTarget = (event.target);
-        const addButton = eventTarget.closest("button");
-        const productId = addButton.getAttribute("data-remove");
-        removeProductFromCart(productId);
-        //update cart after item is removed
-        updateCart();
-    }));
         }).catch((error) => console.error(error)).finally(() => toggleLoader());
-        
-    }
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+    toggleLoader();
+    fetchProducts().then((products) => {
+        populateCategories(products);
+        renderProducts('', 20);
+    }).catch((error) => console.error(error)).finally(() => toggleLoader());
+});
+
+const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+const filterByCategory = (event) => {
+    console.log("triggered");
+    const checkbox = event.target;
+    if (checkbox.checked) renderProducts(searchInput, 16, checkbox.name);
+};
+checkboxes.forEach(checkbox => checkbox.addEventListener("change", filterByCategory));
 
     //handle navbar sticky after scrolled past its height
     const limitContainer = document.querySelector("[data-limit]");
@@ -288,6 +306,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     toggleDropdownButton && toggleDropdownButton.addEventListener("click", toggleCategoryDropdownMenu);
+
+    //handle category filter
+    const generateCategory = (categoryLabel) => {
+        const li = document.createElement('li');
+        li.classList.add('flex', 'items-center');
+        const checkbox = document.createElement('input');
+        checkbox.setAttribute('type', 'checkbox');
+        checkbox.name = categoryLabel;
+        checkbox.classList.add('w-4', 'h-4', 'bg-gray-100', 'border-gray-300', 'rounded', 'text-primary-600', 'focus:ring-primary-500', 'dark:focus:ring-primary-600', 'dark:ring-offset-gray-700', 'focus:ring-2', 'dark:bg-gray-600', 'dark:border-gray-500');
+        const label = document.createElement('label');
+        label.setAttribute('for', 'apple');
+        label.classList.add('ml-2', 'text-sm', 'font-medium', 'text-gray-900', 'dark:text-gray-100');
+        label.textContent = categoryLabel;
+        li.appendChild(checkbox);
+        li.appendChild(label);
+        return li;
+    }
 
     //handle search filter
     const searchInputContainer = document.getElementById("default-search");

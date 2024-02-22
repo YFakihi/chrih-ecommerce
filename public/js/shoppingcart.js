@@ -237,45 +237,43 @@ document.addEventListener("DOMContentLoaded", function () {
     loader.classList.toggle("hidden");
     loader.classList.toggle("flex");
   };
+
+  // Define a global variable to store categories
+  var categories = [];
+  var populateCategories = function populateCategories(products) {
+    var categoryContainer = document.querySelector("[data-element='category-container']");
+    if (!categoryContainer) return; //exit if category container doesnt exist on current page
+    var addedCategories = new Set(); //remove duplicate category names
+    while (categoryContainer.firstChild) categoryContainer.removeChild(categoryContainer.firstChild);
+    products.forEach(function (product) {
+      var categoryName = product.category.name;
+      if (!addedCategories.has(categoryName)) {
+        categoryContainer.appendChild(generateCategory(categoryName));
+        addedCategories.add(categoryName);
+      }
+    });
+    categories = Array.from(addedCategories);
+  };
+
+  // Function to render products
   var renderProducts = function renderProducts() {
     var searchInput = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
     var numOfProducts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 8;
+    var category = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
     var productCardContainer = document.querySelector("[data-element='product-container']");
     toggleLoader();
     fetchProducts().then(function (products) {
-      while (productCardContainer.lastChild && productCardContainer.lastChild.role !== "status") productCardContainer.removeChild(productCardContainer.lastChild);
+      while (productCardContainer.lastChild && productCardContainer.lastChild.role !== "status") {
+        productCardContainer.removeChild(productCardContainer.lastChild);
+      }
       var filteredProducts = products.filter(function (product) {
-        return product.name.toLowerCase().trim().includes(searchInput);
+        var productNameMatches = product.name.toLowerCase().trim().includes(searchInput);
+        var categoryMatches = category === '' || product.category.name.toLowerCase().trim() === category.toLowerCase().trim();
+        return productNameMatches && categoryMatches;
       });
       filteredProducts.slice(0, numOfProducts).forEach(function (product) {
         productCardContainer.appendChild(createProductCard(product));
-        // Add quantity property to each product with a default starting value of 0
         product.quantity = 0;
-      });
-      //attatch click event listener to add product Button
-      var addButtons = document.querySelectorAll('[data-add]');
-      addButtons && addButtons.forEach(function (addButton) {
-        return addButton.addEventListener("click", function (event) {
-          var eventTarget = event.target;
-          var addButton = eventTarget.closest("button");
-          var productId = addButton.getAttribute("data-add");
-          addProductToCart(productId, products);
-          //update cart after item is added
-          updateCart();
-        });
-      });
-
-      //attatch click event listener to remove product Button
-      var removeButtons = document.querySelectorAll('[data-remove]');
-      removeButtons && removeButtons.forEach(function (removeButton) {
-        return removeButton.addEventListener("click", function (event) {
-          var eventTarget = event.target;
-          var addButton = eventTarget.closest("button");
-          var productId = addButton.getAttribute("data-remove");
-          removeProductFromCart(productId);
-          //update cart after item is removed
-          updateCart();
-        });
       });
     })["catch"](function (error) {
       return console.error(error);
@@ -283,6 +281,26 @@ document.addEventListener("DOMContentLoaded", function () {
       return toggleLoader();
     });
   };
+  window.addEventListener('DOMContentLoaded', function () {
+    toggleLoader();
+    fetchProducts().then(function (products) {
+      populateCategories(products);
+      renderProducts('', 20);
+    })["catch"](function (error) {
+      return console.error(error);
+    })["finally"](function () {
+      return toggleLoader();
+    });
+  });
+  var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  var filterByCategory = function filterByCategory(event) {
+    console.log("triggered");
+    var checkbox = event.target;
+    if (checkbox.checked) renderProducts(searchInput, 16, checkbox.name);
+  };
+  checkboxes.forEach(function (checkbox) {
+    return checkbox.addEventListener("change", filterByCategory);
+  });
 
   //handle navbar sticky after scrolled past its height
   var limitContainer = document.querySelector("[data-limit]");
@@ -321,6 +339,23 @@ document.addEventListener("DOMContentLoaded", function () {
     dropdownMenu.classList.toggle("hidden");
   };
   toggleDropdownButton && toggleDropdownButton.addEventListener("click", toggleCategoryDropdownMenu);
+
+  //handle category filter
+  var generateCategory = function generateCategory(categoryLabel) {
+    var li = document.createElement('li');
+    li.classList.add('flex', 'items-center');
+    var checkbox = document.createElement('input');
+    checkbox.setAttribute('type', 'checkbox');
+    checkbox.name = categoryLabel;
+    checkbox.classList.add('w-4', 'h-4', 'bg-gray-100', 'border-gray-300', 'rounded', 'text-primary-600', 'focus:ring-primary-500', 'dark:focus:ring-primary-600', 'dark:ring-offset-gray-700', 'focus:ring-2', 'dark:bg-gray-600', 'dark:border-gray-500');
+    var label = document.createElement('label');
+    label.setAttribute('for', 'apple');
+    label.classList.add('ml-2', 'text-sm', 'font-medium', 'text-gray-900', 'dark:text-gray-100');
+    label.textContent = categoryLabel;
+    li.appendChild(checkbox);
+    li.appendChild(label);
+    return li;
+  };
 
   //handle search filter
   var searchInputContainer = document.getElementById("default-search");
