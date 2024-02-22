@@ -22,7 +22,10 @@ Route::get('/', function () {
 })->name('home.index');
 
 Route::get('/products', [HomeController::class,'index']);
-Route::get('/register', [AuthController::class,'index']);
+
+Route::get('/registerform', [AuthController::class,'index'])->name('register');
+
+
 
 Route::post('/register', [AuthController::class, 'store'])->name('newregister');
 
