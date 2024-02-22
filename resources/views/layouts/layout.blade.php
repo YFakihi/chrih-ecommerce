@@ -36,6 +36,7 @@
                                 <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">SimpleFashion</span>
                             </a>
                               <div class="flex justify-center items-center gap-2">
+
                               <a href="{{route('home.index')}}" class="{{ request()->routeIs('home.index') ? 'bg-gray-900' : '' }} text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Home</a>
                               <a href="{{route('products.index')}}" class="{{ request()->routeIs('products.index') ? 'bg-gray-900' : '' }} text-white rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Products</a>
                               </div>
@@ -43,7 +44,17 @@
                           </div>
                           <div class="flex flex-row gap-3">
                             {{-- <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login</button> --}}
+                            <a class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" href="#">Welcome {{auth()->user()->name}}</a>
+                          @guest
                           <a type="button" href="{{route('register')}}" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Get started</a>
+                          @endguest
+                          @auth
+                      <a class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"x` onclick="document.getElementById('logoutform').submit();" href="#">Logout</a>
+          
+                      <form id="logoutform" action="{{route('logout')}}" method="post">
+                        @csrf
+                      </form>
+                      @endauth
                           </div>
                         </div>
                         <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">

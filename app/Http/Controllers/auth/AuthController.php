@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     public function index(){
-        if (auth()->check()){
-            return redirect('/');
-        }
+        // if (auth()->check()){
+        //     return redirect('/');
+        // }
         return view('auth.register');    
     }
     public function store(Request $request)
@@ -32,5 +32,10 @@ class AuthController extends Controller
         auth()->login($user);
         return redirect('/');
     }
+
+    public function logout(){
+        auth()->logout();
+        return redirect('/');
+ }
     
 }

@@ -25,11 +25,9 @@ Route::get('/products', [HomeController::class,'index']);
 
 Route::get('/registerform', [AuthController::class,'index'])->name('register');
 
-
-
 Route::post('/register', [AuthController::class, 'store'])->name('newregister');
 
-
+Route::post('/logout',[AuthController::class,'logout'])->name('logout');         
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
@@ -37,7 +35,7 @@ Route::group(['prefix' => 'admin'], function () {
 
 Route::get('/checkout', [PaymentController::class,'index'])->name('checkout');
 Route::post('/session', [PaymentController::class,'checkout']);
-Route::get('/success', [PaymentController::class,'success'])->name('checkout.success'); 
+Route::get('/success', [PaymentController::class,'success'])->name('success'); 
 
 
 Route::get('/view/products', function () {
