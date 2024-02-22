@@ -15,10 +15,11 @@ class PaymentController extends Controller
     {
         return view('checkout');
     }
-
+//handling the checkout process with Stripe.
     public function checkout(Request $request)
     {
         Stripe::setApiKey(env('STRIPE_SECRET_KEY')); 
+       // This line is decoding the JSON data from the request
         $requestData = json_decode($request->all()[0]);
 
         $lineItems = [];
@@ -48,7 +49,7 @@ class PaymentController extends Controller
             'success_url' => route('success', [], true) . "?session_id={CHECKOUT_SESSION_ID}",
             // 'cancel_url' => route('checkout.cancel', [], true),
         ]); 
-
+//returns the session URL as a JSON 
         return response()->json($session->url);
     }
     

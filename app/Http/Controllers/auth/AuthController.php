@@ -10,16 +10,16 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     public function index(){
-        if (auth()->check()){
-            return redirect('/');
-        }
+        // if (auth()->check()){
+        //     return redirect('/');
+        // }
         return view('auth.register');    
     }
 
     public function login(){
-        if (auth()->check()){
-            return redirect('/');
-        }
+        // if (auth()->check()){
+        //     return redirect('/');
+        // }
         return view('auth.login');    
     }
 
